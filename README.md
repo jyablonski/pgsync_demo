@@ -2,16 +2,16 @@
 
 Example Repo working with [pgsync](https://github.com/toluaina/pgsync) to sync data in real time from Postgres to Elasticsearch or Opensearch.
 
-Run `make up` which will spin up 6 Containers and serve a Kibana instance avaialble at `http://localhost:5601`.
+Run `make up` which will spin up 6 Containers and serve a Kibana instance available at http://localhost:5601.
 
 - Postgres Database
 - Redis Database
-- Event Producer Python Script
+- Example Event Producer Container
 - Opensearch Database
 - Kibana Instance
 - pgsync Container
 
-Events are continuously produced by the Python Script, stored to Postgres, and then streamed over from Postgres to Opensearch. To view the data in Kibana, you'll have to manually edit the Indicies created in Opensearch to set Replicas -> 0, and then create some Index Patterns to search on (`bookings*`, `events*`, `venues*`).
+Events are continuously produced by the Event Producer, stored to Postgres, and then streamed over from Postgres to Opensearch. To view the data in Kibana, you'll have to manually edit the Indicies created in Opensearch to set Replicas -> 0, and then create some Index Patterns to search on (`bookings*`, `events*`, `venues*`).
 
 When finished run `make down` to spin resources down.
 

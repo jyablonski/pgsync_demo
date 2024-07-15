@@ -1,0 +1,93 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    volumes:
+      - ${PWD}/docker/postgres_bootstrap.sql:/docker-entrypoint-initdb.d/postgres_bootstrap.sql
+    networks:
+      - backend
+
+  redis:
+    image: redis
+    command: redis-server --requirepass bigpassword123
+    container_name: redis
+    # ports:
+    #   - 6379:6379
+    networks:
+      - backend
+
+  opensearch:
+    image: opensearchproject/opensearch:latest
+    container_name: opensearch
+    environment:
+      - discovery.type=single-node
+      - plugins.security.disabled=true
+      - cluster.routing.allocation.disk.threshold_enabled=false
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=bkmSqgcZMzR1JS3ek8gdNGyOrVefyVkK!
+    ports:
+      - 9200:9200 # Opensearch API
+      - 9600:9600 # Performance Analyzer
+    networks:
+      - backend
+
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:latest
+    container_name: opensearch-dashboards
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["http://opensearch:9200"]' # Define the OpenSearch nodes that OpenSearch Dashboards will query
+      DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
+    networks:
+      - backend
+
+  event_producer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: event_producer
+    container_name: event_producer
+    depends_on:
+      - postgres
+      - opensearch
+    networks:
+      - backend
+
+  pgsync:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.pgsync
+    depends_on:
+      - postgres
+      - redis
+      - opensearch
+    image: pgsync_local
+    environment:
+      - PG_USER=postgres
+      - PG_HOST=postgres
+      - PG_PORT=5432
+      - PG_PASSWORD=postgres
+      - LOG_LEVEL=INFO
+      - ELASTICSEARCH_PORT=9200
+      - ELASTICSEARCH_SCHEME=http
+      - ELASTICSEARCH_HOST=opensearch
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_AUTH=bigpassword123
+      - ELASTICSEARCH=false
+      - OPENSEARCH=True
+    networks:
+      - backend
+    restart: always
+
+networks:
+  backend:
+    driver: bridge

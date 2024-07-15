@@ -1,0 +1,68 @@
+[
+    {
+        "database": "postgres",
+        "index": "venues",
+        "nodes": {
+            "table": "venues",
+            "schema": "source",
+            "columns": [
+                "id",
+                "venue_name",
+                "address",
+                "city",
+                "state",
+                "created_at",
+                "updated_at"
+            ]
+        }
+    },
+    {
+        "database": "postgres",
+        "index": "events",
+        "nodes": {
+            "table": "events",
+            "schema": "source",
+            "columns": [
+                "id",
+                "venue_id",
+                "event_name",
+                "event_date",
+                "created_at",
+                "updated_at"
+            ],
+            "relationship": {
+                "variant": "object",
+                "type": "one_to_many"
+            },
+            "children": [
+                {
+                    "table": "venues",
+                    "schema": "source",
+                    "columns": [
+                        "venue_name"
+                    ],
+                    "relationship": {
+                        "variant": "object",
+                        "type": "one_to_many"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "database": "postgres",
+        "index": "bookings",
+        "nodes": {
+            "table": "customer_event_bookings",
+            "schema": "source",
+            "columns": [
+                "id",
+                "customer_id",
+                "event_id",
+                "seat_id",
+                "created_at",
+                "updated_at"
+            ]
+        }
+    }
+]

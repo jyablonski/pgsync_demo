@@ -1,0 +1,14 @@
+FROM python:3.11-slim
+
+WORKDIR /usr/src/app
+
+RUN pip install pgsync
+
+RUN apt-get update && \
+    apt-get -y upgrade
+
+COPY pg_sync/ ./
+RUN chmod +x ./entrypoint.sh
+
+
+ENTRYPOINT ["bash", "./entrypoint.sh"]

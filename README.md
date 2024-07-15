@@ -66,5 +66,5 @@ The other primary CDC solution alternative to `pgsync` is a Debezium setup to tr
 ## Opensearch Examples
 
 ![image](https://github.com/user-attachments/assets/ba8b8570-0c85-4d94-8885-4e7b70634690)
-![image](https://github.com/user-attachments/assets/5027cb6f-8755-4373-84c1-1345f896ecd8)
+![image](https://github.com/user-attachments/assets/9a791c85-725a-4a76-80e6-ec8b0410893a)
 ![image](https://github.com/user-attachments/assets/b00b5e0b-34b7-465f-976e-71fe608fcaac)
